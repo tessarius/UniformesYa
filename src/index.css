@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dark-bg: #080F1E;
+  --color-dark-surface: #111E35;
+  --color-dark-border: #1C3050;
+  --color-dark-border-subtle: #0E1A2E;
+  --color-accent: #1D6BFF;
+  --color-accent-dark: #0A3FCC;
+  --color-text-primary: #E8EEFF;
+  --color-text-secondary: #7A96BF;
+  --color-text-muted: #3D5878;
+  --color-text-dim: #8BAAC8;
+  --color-success: #14CC88;
+  --color-warning: #F59E0B;
+  --color-danger: #FF4D6A;
+  --color-purple: #8B5CF6;
+  --font-sans: 'DM Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--color-dark-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+#root { min-height: 100vh; }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-dark-border); border-radius: 4px; }
+
+.canvas-container { cursor: default !important; }
+.upper-canvas { cursor: default !important; }
+
+input, textarea, button { font-family: var(--font-sans); }
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
+
+::selection { background: rgba(29,107,255,0.3); }
+.canvas-container canvas { background: transparent !important; }
+button, [role=button] { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+* { -webkit-overflow-scrolling: touch; }
+p, h1, h2, h3, h4 { text-wrap: pretty; }
