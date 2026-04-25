@@ -47,7 +47,7 @@ export default function EditorScreen({ onConfirm, onBack, savedState }) {
     const saved = canvasStatesRef.current['frente']
     if (saved) {
       const clean = { ...saved, objects: (saved.objects || []).filter(o => o.name !== '__guide') }
-      canvas.loadFromJSON(clean, () => { canvas.renderAll(); updateDesignList() })
+      canvas.loadFromJSON(clean).then(() => { canvas.renderAll(); updateDesignList() })
     }
     return () => { canvas.dispose() }
   }, [])
@@ -77,7 +77,10 @@ export default function EditorScreen({ onConfirm, onBack, savedState }) {
     const saved = newStates[area]
     if (saved) {
       const clean = { ...saved, objects: (saved.objects || []).filter(o => o.name !== '__guide') }
-      fabricRef.current.loadFromJSON(clean, () => { fabricRef.current.renderAll(); updateDesignList() })
+      fabricRef.current.loadFromJSON(clean).then(() => {
+        fabricRef.current.renderAll()
+        updateDesignList()
+      })
     } else {
       fabricRef.current.renderAll()
     }

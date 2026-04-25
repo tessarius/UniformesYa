@@ -13,7 +13,7 @@ export function detectColorsOffscreen(canvasJson, areaId) {
     const fc = new fabric.Canvas(el, { width: CANVAS_W, height: CANVAS_H, backgroundColor: '' })
     const clean = { ...canvasJson, objects: objs }
 
-    fc.loadFromJSON(clean, () => {
+    fc.loadFromJSON(clean).then(() => {
       try {
         const dataURL = fc.toDataURL({ format: 'png', left: pa.x, top: pa.y, width: pa.w, height: pa.h, multiplier: 0.5 })
         const img = new Image()
@@ -37,6 +37,6 @@ export function detectColorsOffscreen(canvasJson, areaId) {
         img.onerror = () => { fc.dispose(); document.body.removeChild(el); resolve(1) }
         img.src = dataURL
       } catch (e) { fc.dispose(); document.body.removeChild(el); resolve(1) }
-    })
+    }).catch(() => { fc.dispose(); document.body.removeChild(el); resolve(1) })
   })
 }
