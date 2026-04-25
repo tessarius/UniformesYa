@@ -1,6 +1,10 @@
 export default function SLabel({ children }) {
   return (
-    <div className="text-[11px] font-bold text-text-muted tracking-widest uppercase mb-2.5">
+    <div style={{
+      fontSize: 11, fontWeight: 700, color: '#3D5878',
+      letterSpacing: '0.08em', textTransform: 'uppercase',
+      marginBottom: 12,
+    }}>
       {children}
     </div>
   )

@@ -7,32 +7,33 @@ const items = [
   { id: 'tote',      label: 'Tote Bag',  enabled: false, color: '#2A1E0E' },
   { id: 'hoodie',    label: 'Hoodie',    enabled: false, color: '#1A1A2E' },
   { id: 'gorra',     label: 'Gorra',     enabled: false, color: '#0E2A1A' },
-  { id: 'boligrafo', label: 'Boligrafo', enabled: false, color: '#2A0E1A' },
+  { id: 'boligrafo', label: 'Bolígrafo', enabled: false, color: '#2A0E1A' },
 ]
 
 function ItemCard({ item, onSelect }) {
   return (
     <div
       onClick={() => item.enabled && onSelect(item.id)}
-      className={`
-        rounded-2xl p-5 flex flex-col items-center gap-3 relative transition-all
-        ${item.enabled
-          ? 'bg-dark-surface border border-dark-border cursor-pointer'
-          : 'bg-[#0C1626] border border-dark-border-subtle cursor-default opacity-55'
-        }
-      `}
+      style={{
+        background: item.enabled ? '#111E35' : '#0C1626',
+        border: `1px solid ${item.enabled ? '#1C3050' : '#0E1A2E'}`,
+        borderRadius: 16, padding: '22px 16px',
+        cursor: item.enabled ? 'pointer' : 'default',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12,
+        opacity: item.enabled ? 1 : 0.55, position: 'relative', transition: 'all 0.15s',
+      }}
     >
       {!item.enabled && (
-        <div className="absolute top-2 right-2">
-          <Badge color="#7A96BF">Proximamente</Badge>
+        <div style={{ position: 'absolute', top: 9, right: 9 }}>
+          <Badge color="#7A96BF">Próximamente</Badge>
         </div>
       )}
       <TShirtSVG color={item.color} size={72} />
-      <div className={`text-sm font-semibold ${item.enabled ? 'text-text-primary' : 'text-text-muted'}`}>
+      <div style={{ fontSize: 14, fontWeight: 600, color: item.enabled ? '#E8EEFF' : '#3D5878' }}>
         {item.label}
       </div>
       {item.enabled && (
-        <div className="text-xs text-accent font-medium">Disponible →</div>
+        <div style={{ fontSize: 12, color: '#1D6BFF', fontWeight: 500 }}>Disponible →</div>
       )}
     </div>
   )
@@ -40,13 +41,13 @@ function ItemCard({ item, onSelect }) {
 
 export default function ItemScreen({ onSelect, onBack }) {
   return (
-    <div className="min-h-full bg-dark-bg flex flex-col">
-      <AppBar title="Que queres personalizar?" onBack={onBack} step={1} totalSteps={4} />
-      <div className="p-4 flex-1">
-        <p className="text-sm text-text-secondary mb-5 leading-relaxed">
-          Por ahora solo remeras estan disponibles. Mas productos vienen pronto!
+    <div style={{ minHeight: '100%', background: '#080F1E', display: 'flex', flexDirection: 'column' }}>
+      <AppBar title="¿Qué querés personalizar?" onBack={onBack} step={1} totalSteps={4} />
+      <div style={{ padding: '24px 18px', flex: 1 }}>
+        <p style={{ fontSize: 14, color: '#7A96BF', marginBottom: 20, lineHeight: 1.6 }}>
+          Por ahora solo remeras están disponibles. ¡Más productos vienen pronto!
         </p>
-        <div className="grid grid-cols-2 gap-3">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           {items.map(item => <ItemCard key={item.id} item={item} onSelect={onSelect} />)}
         </div>
       </div>

@@ -4,63 +4,67 @@ import SLabel from './SLabel'
 import TShirtSVG from './TShirtSVG'
 
 const steps = [
-  { icon: 'layers',   label: 'Elegi tu item',        desc: 'Remera, hoodie, tote bag y mas' },
-  { icon: 'upload',   label: 'Subi tu diseno',        desc: 'PNG o SVG en alta calidad' },
-  { icon: 'zap',      label: 'Cotiza al instante',    desc: 'Precio en tiempo real' },
-  { icon: 'whatsapp', label: 'Solicita por WhatsApp', desc: 'Confirmamos y producimos' },
+  { icon: 'layers',   label: 'Elegí tu item',        desc: 'Remera, hoodie, tote bag y más' },
+  { icon: 'upload',   label: 'Subí tu diseño',        desc: 'PNG o SVG en alta calidad' },
+  { icon: 'zap',      label: 'Cotizá al instante',    desc: 'Precio en tiempo real' },
+  { icon: 'whatsapp', label: 'Solicitá por WhatsApp', desc: 'Confirmamos y producimos' },
 ]
 
 export default function WelcomeScreen({ onStart }) {
   return (
     <div className="min-h-full flex flex-col bg-dark-bg">
       {/* Hero */}
-      <div className="pt-12 px-6 pb-8 text-center relative overflow-hidden">
+      <div className="pt-14 px-7 pb-10 text-center relative overflow-hidden">
         {/* Background glow */}
-        <div className="absolute -top-15 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-[radial-gradient(circle,rgba(29,107,255,0.18)_0%,transparent_70%)] pointer-events-none" />
+        <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-[320px] h-[320px] pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(29,107,255,0.18) 0%, transparent 70%)' }} />
 
         {/* Logo */}
-        <div className="inline-flex items-center gap-2.5 mb-8 relative">
-          <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center shadow-[0_4px_20px_rgba(29,107,255,0.5)]">
-            <Icon name="zap" size={20} color="#fff" />
+        <div className="inline-flex items-center gap-3 mb-10 relative">
+          <div className="w-11 h-11 rounded-xl flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg,#1D6BFF,#0A3FCC)', boxShadow: '0 4px 20px rgba(29,107,255,0.5)' }}>
+            <Icon name="zap" size={22} color="#fff" />
           </div>
-          <span className="text-[22px] font-extrabold text-text-primary tracking-tight">UniformesYA</span>
+          <span style={{ fontSize: 24, fontWeight: 800, color: '#E8EEFF', letterSpacing: '-0.03em' }}>UniformesYA</span>
         </div>
 
         {/* T-shirts */}
-        <div className="flex justify-center mb-7 relative">
+        <div className="flex justify-center mb-8 relative">
           {['#1A3A6B', '#1E1E1E', '#4A5568', '#8B1A1A'].map((c, i) => (
-            <div key={i} className={`${i > 0 ? '-ml-3' : ''} drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]`}>
-              <TShirtSVG color={c} size={60} />
+            <div key={i} style={{ marginLeft: i > 0 ? -12 : 0, filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.5))' }}>
+              <TShirtSVG color={c} size={64} />
             </div>
           ))}
         </div>
 
-        <h1 className="text-[28px] font-extrabold text-text-primary leading-tight mb-3 tracking-tight">
-          Disena tu remera y<br /><span className="text-accent">cotiza al instante</span>
+        <h1 style={{ fontSize: 30, fontWeight: 800, color: '#E8EEFF', lineHeight: 1.2, margin: '0 0 14px', letterSpacing: '-0.02em' }}>
+          Diseñá tu remera y<br /><span style={{ color: '#1D6BFF' }}>cotizá al instante</span>
         </h1>
-        <p className="text-[15px] text-text-secondary leading-relaxed mb-8 max-w-[280px] mx-auto">
-          Subi tu diseno, ubicalo en la remera y recibi tu presupuesto en segundos.
+        <p style={{ fontSize: 16, color: '#7A96BF', lineHeight: 1.65, margin: '0 0 36px', maxWidth: 290, marginLeft: 'auto', marginRight: 'auto' }}>
+          Subí tu diseño, ubicalo en la remera y recibí tu presupuesto en segundos.
         </p>
-        <Btn onClick={onStart} className="max-w-[280px] mx-auto">
-          Empezar ahora
-        </Btn>
+        <div style={{ maxWidth: 300, margin: '0 auto' }}>
+          <Btn onClick={onStart} fullWidth>
+            Empezar ahora
+          </Btn>
+        </div>
       </div>
 
       {/* Steps */}
-      <div className="flex-1 px-6 pt-8 flex flex-col">
-        <SLabel>Como funciona</SLabel>
-        <div className="flex flex-col">
+      <div className="flex-1 px-7 pb-6" style={{ paddingTop: 32 }}>
+        <SLabel>Cómo funciona</SLabel>
+        <div className="flex flex-col" style={{ gap: 0 }}>
           {steps.map((s, i) => (
-            <div key={i} className={`flex gap-4 ${i < steps.length - 1 ? 'pb-5' : ''} relative`}>
+            <div key={i} style={{ display: 'flex', gap: 16, paddingBottom: i < steps.length - 1 ? 24 : 0, position: 'relative' }}>
               {i < steps.length - 1 && (
-                <div className="absolute left-5 top-10 w-px bg-dark-border" style={{ height: 'calc(100% - 20px)' }} />
+                <div style={{ position: 'absolute', left: 20, top: 40, width: 1, background: '#1C3050', height: 'calc(100% - 20px)' }} />
               )}
-              <div className="w-10 h-10 rounded-xl bg-dark-surface border border-dark-border flex items-center justify-center shrink-0 relative z-[1]">
+              <div style={{ width: 40, height: 40, borderRadius: 12, background: '#111E35', border: '1px solid #1C3050', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, position: 'relative', zIndex: 1 }}>
                 <Icon name={s.icon} size={18} color="#1D6BFF" />
               </div>
-              <div className="pt-2">
-                <div className="text-[15px] font-semibold text-text-primary mb-0.5">{s.label}</div>
-                <div className="text-[13px] text-text-secondary">{s.desc}</div>
+              <div style={{ paddingTop: 8 }}>
+                <div style={{ fontSize: 15, fontWeight: 600, color: '#E8EEFF', marginBottom: 3 }}>{s.label}</div>
+                <div style={{ fontSize: 13, color: '#7A96BF', lineHeight: 1.5 }}>{s.desc}</div>
               </div>
             </div>
           ))}
@@ -68,9 +72,9 @@ export default function WelcomeScreen({ onStart }) {
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-5 border-t border-dark-border-subtle text-center">
-        <p className="text-xs text-text-muted m-0">
-          Asuncion, Paraguay · uniformesya@gmail.com
+      <div style={{ padding: '20px 28px', borderTop: '1px solid #0E1A2E', textAlign: 'center' }}>
+        <p style={{ fontSize: 12, color: '#3D5878', margin: 0 }}>
+          Asunción, Paraguay · uniformesya@gmail.com
         </p>
       </div>
     </div>

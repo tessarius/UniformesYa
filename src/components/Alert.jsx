@@ -10,10 +10,7 @@ const configs = {
 export default function Alert({ type = 'warn', children }) {
   const cfg = configs[type]
   return (
-    <div
-      className="flex gap-2.5 items-start p-3 rounded-[10px] text-[13px] leading-relaxed"
-      style={{ background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color }}
-    >
+    <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '12px 14px', borderRadius: 10, background: cfg.bg, border: `1px solid ${cfg.border}`, fontSize: 13, color: cfg.color, lineHeight: 1.5 }}>
       <Icon name={cfg.icon} size={16} color={cfg.color} />
       <span>{children}</span>
     </div>

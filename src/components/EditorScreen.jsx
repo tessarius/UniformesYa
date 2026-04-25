@@ -37,7 +37,6 @@ export default function EditorScreen({ onConfirm, onBack, savedState }) {
   const colorHex = SHIRT_COLORS.find(c => c.id === shirtColor)?.hex || '#1E3A5F'
   const colorLabel = SHIRT_COLORS.find(c => c.id === shirtColor)?.label
 
-  // Init Fabric
   useEffect(() => {
     if (!canvasRef.current) return
     const canvas = new fabric.Canvas(canvasRef.current, {
@@ -67,7 +66,6 @@ export default function EditorScreen({ onConfirm, onBack, savedState }) {
     })
   }
 
-  // Switch area
   const switchArea = (area) => {
     if (!fabricRef.current || area === activeArea) return
     const json = fabricRef.current.toJSON(['name', '_filename'])
@@ -75,22 +73,16 @@ export default function EditorScreen({ onConfirm, onBack, savedState }) {
     setCanvasStates(newStates)
     canvasStatesRef.current = newStates
     setActiveArea(area)
-
     fabricRef.current.clear()
-
     const saved = newStates[area]
     if (saved) {
       const clean = { ...saved, objects: (saved.objects || []).filter(o => o.name !== '__guide') }
-      fabricRef.current.loadFromJSON(clean, () => {
-        fabricRef.current.renderAll()
-        updateDesignList()
-      })
+      fabricRef.current.loadFromJSON(clean, () => { fabricRef.current.renderAll(); updateDesignList() })
     } else {
       fabricRef.current.renderAll()
     }
   }
 
-  // Upload
   const handleUploadClick = () => {
     if (!hasSeenUploadModal) setUploadModal('msg1')
     else fileInputRef.current?.click()
@@ -101,7 +93,7 @@ export default function EditorScreen({ onConfirm, onBack, savedState }) {
     if (!file) return
     e.target.value = ''
     if (!['image/png', 'image/svg+xml'].includes(file.type)) { alert('Solo PNG o SVG.'); return }
-    if (file.size > 10 * 1024 * 1024) { alert('Maximo 10 MB.'); return }
+    if (file.size > 10 * 1024 * 1024) { alert('Máximo 10 MB.'); return }
     const reader = new FileReader()
     reader.onload = (ev) => {
       const pa = PRINT_AREAS[activeAreaRef.current]
@@ -136,7 +128,6 @@ export default function EditorScreen({ onConfirm, onBack, savedState }) {
     setDesigns(prev => prev.filter(d => d.id !== id))
   }
 
-  // Confirm → detect colors
   const handleConfirmClick = async () => {
     const json = fabricRef.current?.toJSON(['name', '_filename'])
     const allStates = { ...canvasStatesRef.current, [activeArea]: json }
@@ -158,7 +149,6 @@ export default function EditorScreen({ onConfirm, onBack, savedState }) {
       const detected = await detectColorsOffscreen(allStates[a.id], a.id)
       results[a.id] = detected
     }))
-
     setColorsByArea(results)
     setDetectingColors(false)
   }
@@ -169,7 +159,7 @@ export default function EditorScreen({ onConfirm, onBack, savedState }) {
   }
 
   const doConfirm = () => {
-    const snap = (() => { try { return fabricRef.current?.toDataURL({ format: 'png', multiplier: 0.5 }) } catch (e) { return null } })()
+    const snap = (() => { try { return fabricRef.current?.toDataURL({ format: 'png', multiplier: 0.5 }) } catch { return null } })()
     const json = fabricRef.current?.toJSON(['name', '_filename'])
     const allStates = { ...canvasStatesRef.current, [activeArea]: json }
     onConfirm({
@@ -185,44 +175,45 @@ export default function EditorScreen({ onConfirm, onBack, savedState }) {
   const hasDesigns = designs.length > 0
 
   return (
-    <div className="min-h-full bg-dark-bg flex flex-col">
-      <AppBar title="Personaliza tu remera" onBack={onBack} step={2} totalSteps={4} />
-      <input ref={fileInputRef} type="file" accept=".png,.svg,image/png,image/svg+xml" className="hidden" onChange={handleFileChange} />
+    <div style={{ minHeight: '100%', background: '#080F1E', display: 'flex', flexDirection: 'column' }}>
+      <AppBar title="Personalizá tu remera" onBack={onBack} step={2} totalSteps={4} />
+      <input ref={fileInputRef} type="file" accept=".png,.svg,image/png,image/svg+xml" style={{ display: 'none' }} onChange={handleFileChange} />
 
       {/* Color selector */}
-      <div className="px-4 pt-3.5">
-        <div className="flex items-center gap-2 flex-wrap">
-          <SLabel>Color:</SLabel>
+      <div style={{ padding: '16px 18px 0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: '#3D5878', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Color:</span>
           {SHIRT_COLORS.map(c => (
             <button key={c.id} onClick={() => setShirtColor(c.id)} title={c.label}
-              className="w-7 h-7 rounded-full outline-none transition-all shrink-0 cursor-pointer border-none"
               style={{
+                width: 28, height: 28, borderRadius: 999, outline: 'none',
+                transition: 'all 0.12s', flexShrink: 0, cursor: 'pointer',
                 background: c.hex,
                 border: shirtColor === c.id ? '3px solid #1D6BFF' : '2px solid rgba(255,255,255,0.08)',
                 boxShadow: shirtColor === c.id ? '0 0 0 2px rgba(29,107,255,0.35)' : 'none',
               }} />
           ))}
-          <span className="text-xs text-text-secondary ml-0.5">{colorLabel}</span>
+          <span style={{ fontSize: 12, color: '#7A96BF', marginLeft: 4 }}>{colorLabel}</span>
         </div>
       </div>
 
       {/* Area tabs */}
-      <div className="px-4 pt-3 flex gap-1.5">
+      <div style={{ padding: '12px 18px 0', display: 'flex', gap: 6 }}>
         {AREAS.map(a => {
           const hasContent = designs.some(d => d.area === a.id)
           return (
             <button key={a.id} onClick={() => switchArea(a.id)}
-              className={`
-                flex-1 py-2.5 px-1 text-[11px] font-semibold border-none rounded-lg cursor-pointer
-                transition-all relative
-                ${activeArea === a.id
-                  ? 'bg-accent text-white shadow-[0_2px_12px_rgba(29,107,255,0.35)]'
-                  : 'bg-dark-surface text-text-secondary'
-                }
-              `}>
+              style={{
+                flex: 1, padding: '10px 4px', fontSize: 11, fontWeight: 600,
+                fontFamily: "'DM Sans', sans-serif",
+                border: 'none', borderRadius: 9, cursor: 'pointer', transition: 'all 0.12s', position: 'relative',
+                background: activeArea === a.id ? '#1D6BFF' : '#111E35',
+                color: activeArea === a.id ? '#fff' : '#7A96BF',
+                boxShadow: activeArea === a.id ? '0 2px 12px rgba(29,107,255,0.35)' : 'none',
+              }}>
               {a.short}
               {hasContent && a.id !== activeArea && (
-                <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-success" />
+                <span style={{ position: 'absolute', top: 4, right: 4, width: 6, height: 6, borderRadius: 999, background: '#14CC88' }} />
               )}
             </button>
           )
@@ -230,39 +221,39 @@ export default function EditorScreen({ onConfirm, onBack, savedState }) {
       </div>
 
       {/* Canvas */}
-      <div className="relative mx-auto mt-2 drop-shadow-[0_8px_32px_rgba(0,0,0,0.5)]" style={{ width: CANVAS_W }}>
+      <div style={{ position: 'relative', margin: '10px auto 0', width: CANVAS_W, filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.5))' }}>
         <TShirtBackground color={colorHex} area={activeArea} />
-        <canvas ref={canvasRef} className="block relative z-[1]" />
+        <canvas ref={canvasRef} style={{ display: 'block', position: 'relative', zIndex: 1 }} />
       </div>
 
       {/* Low-res warning */}
       {lowResWarning && (
-        <div className="px-4 pt-2">
-          <Alert type="warn">Imagen de baja resolucion — puede verse pixelada al imprimir.</Alert>
+        <div style={{ padding: '8px 18px 0' }}>
+          <Alert type="warn">Imagen de baja resolución — puede verse pixelada al imprimir.</Alert>
         </div>
       )}
 
       {/* Upload button */}
-      <div className="px-4 pt-2">
+      <div style={{ padding: '10px 18px 0' }}>
         <Btn onClick={handleUploadClick} variant="secondary" fullWidth icon="upload">
-          Subir diseno a {AREAS.find(a => a.id === activeArea)?.label}
+          Subir diseño a {AREAS.find(a => a.id === activeArea)?.label}
         </Btn>
       </div>
 
       {/* Design list */}
       {designs.length > 0 && (
-        <div className="px-4 pt-2">
-          <SLabel>Disenos agregados</SLabel>
-          <div className="flex flex-col gap-1.5">
+        <div style={{ padding: '14px 18px 0' }}>
+          <SLabel>Diseños agregados</SLabel>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {designs.map(d => (
-              <div key={d.id} className="flex items-center gap-2.5 py-2.5 px-3 bg-dark-surface rounded-[10px] border border-dark-border">
+              <div key={d.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px', background: '#111E35', borderRadius: 10, border: '1px solid #1C3050' }}>
                 <Icon name="image" size={16} color="#7A96BF" />
-                <div className="flex-1 min-w-0">
-                  <div className="text-[13px] text-text-primary overflow-hidden text-ellipsis whitespace-nowrap">{d.filename}</div>
-                  <div className="text-[11px] text-accent font-semibold">{AREAS.find(a => a.id === d.area)?.label}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, color: '#E8EEFF', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.filename}</div>
+                  <div style={{ fontSize: 11, color: '#1D6BFF', fontWeight: 600, marginTop: 2 }}>{AREAS.find(a => a.id === d.area)?.label}</div>
                 </div>
                 <button onClick={() => deleteDesign(d.id)}
-                  className="bg-transparent border-none cursor-pointer p-1 flex items-center">
+                  style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center' }}>
                   <Icon name="trash" size={15} color="#FF4D6A" />
                 </button>
               </div>
@@ -272,70 +263,68 @@ export default function EditorScreen({ onConfirm, onBack, savedState }) {
       )}
 
       {/* CTA */}
-      <div className="px-4 pt-2 pb-8 mt-auto">
+      <div style={{ padding: '14px 18px 36px', marginTop: 'auto' }}>
         <Btn onClick={handleConfirmClick} disabled={!hasDesigns} fullWidth>
-          Confirmar diseno →
+          Confirmar diseño →
         </Btn>
-        {!hasDesigns && <div className="text-center text-xs text-text-muted mt-2">Subi al menos un diseno para continuar</div>}
+        {!hasDesigns && (
+          <div style={{ textAlign: 'center', fontSize: 12, color: '#3D5878', marginTop: 10 }}>
+            Subí al menos un diseño para continuar
+          </div>
+        )}
       </div>
 
       {/* Modal: tip 1 */}
-      <Modal open={uploadModal === 'msg1'} noClose title="Antes de subir tu diseno">
-        <Alert type="info">Para la mejor calidad de impresion, subi tus archivos en la mayor resolucion disponible.</Alert>
-        <div className="h-5" />
+      <Modal open={uploadModal === 'msg1'} noClose title="Antes de subir tu diseño">
+        <Alert type="info">Para la mejor calidad de impresión, subí tus archivos en la mayor resolución disponible.</Alert>
+        <div style={{ height: 20 }} />
         <Btn fullWidth onClick={() => setUploadModal('msg2')}>Entendido</Btn>
-        <div className="h-2" />
+        <div style={{ height: 8 }} />
       </Modal>
 
       {/* Modal: tip 2 */}
-      <Modal open={uploadModal === 'msg2'} noClose title="Una cosa mas">
+      <Modal open={uploadModal === 'msg2'} noClose title="Una cosa más">
         <Alert type="success">No te preocupes si las ubicaciones no quedan perfectas. Te enviaremos una prueba antes de producir.</Alert>
-        <div className="h-5" />
+        <div style={{ height: 20 }} />
         <Btn fullWidth onClick={() => { setUploadModal(null); setHasSeenUploadModal(true); setTimeout(() => fileInputRef.current?.click(), 100) }}>
-          Subir diseno
+          Subir diseño
         </Btn>
-        <div className="h-2" />
+        <div style={{ height: 8 }} />
       </Modal>
 
       {/* Modal: confirm colors */}
-      <Modal open={confirmModal} onClose={() => setConfirmModal(false)} title="Colores por area de impresion">
+      <Modal open={confirmModal} onClose={() => setConfirmModal(false)} title="Colores por área de impresión">
         {detectingColors ? (
-          <div className="text-center py-8 text-text-secondary text-sm">
-            Detectando colores...
+          <div style={{ textAlign: 'center', padding: '32px 0', color: '#7A96BF', fontSize: 14 }}>
+            Detectando colores…
           </div>
         ) : (
           <>
-            <div className="mb-4">
-              <Alert type="info">Revisa la cantidad de colores por cada area. Esto afecta el costo de impresion.</Alert>
+            <div style={{ marginBottom: 16 }}>
+              <Alert type="info">Revisá la cantidad de colores por cada área. Esto afecta el costo de impresión.</Alert>
             </div>
-            <div className="flex flex-col gap-2 mb-4">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
               {areasWithDesigns.map(a => {
                 const detected = colorsByArea[a.id] || 1
                 const isEditing = editingArea === a.id
                 return (
-                  <div key={a.id} className="bg-[#152035] rounded-xl py-3 px-3.5"
-                    style={{ border: `1px solid ${isEditing ? '#1D6BFF55' : '#1C3050'}` }}>
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="text-[13px] font-semibold text-text-primary">{a.label}</div>
-                      <div className="flex items-center gap-2">
+                  <div key={a.id} style={{ background: '#152035', borderRadius: 12, padding: '12px 14px', border: `1px solid ${isEditing ? '#1D6BFF55' : '#1C3050'}` }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: '#E8EEFF' }}>{a.label}</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         {isEditing ? (
                           <>
-                            <input type="number" min={1} max={20}
-                              value={editValue}
-                              onChange={e => setEditValue(e.target.value)}
-                              autoFocus
-                              className="w-15 bg-dark-surface border-[1.5px] border-accent rounded-lg py-1.5 px-2 text-[15px] font-bold text-text-primary outline-none text-center" />
-                            <Btn small onClick={() => {
-                              if (parseInt(editValue) > 0) setAreaColor(a.id, editValue)
-                              setEditingArea(null); setEditValue('')
-                            }}>OK</Btn>
+                            <input type="number" min={1} max={20} value={editValue}
+                              onChange={e => setEditValue(e.target.value)} autoFocus
+                              style={{ width: 60, background: '#111E35', border: '1.5px solid #1D6BFF', borderRadius: 8, padding: '6px 8px', fontSize: 15, fontWeight: 700, color: '#E8EEFF', fontFamily: 'inherit', outline: 'none', textAlign: 'center' }} />
+                            <Btn small onClick={() => { if (parseInt(editValue) > 0) setAreaColor(a.id, editValue); setEditingArea(null); setEditValue('') }}>OK</Btn>
                           </>
                         ) : (
                           <>
-                            <span className="text-[22px] font-extrabold text-accent leading-none">{detected}</span>
-                            <span className="text-xs text-text-secondary">color{detected !== 1 ? 'es' : ''}</span>
+                            <span style={{ fontSize: 22, fontWeight: 800, color: '#1D6BFF', lineHeight: 1 }}>{detected}</span>
+                            <span style={{ fontSize: 12, color: '#7A96BF' }}>color{detected !== 1 ? 'es' : ''}</span>
                             <button onClick={() => { setEditingArea(a.id); setEditValue(String(detected)) }}
-                              className="bg-transparent border border-dark-border rounded-lg py-1.5 px-2.5 text-xs text-text-secondary cursor-pointer">
+                              style={{ background: 'transparent', border: '1px solid #1C3050', borderRadius: 8, padding: '5px 10px', fontSize: 12, color: '#7A96BF', cursor: 'pointer', fontFamily: 'inherit' }}>
                               Editar
                             </button>
                           </>
@@ -346,8 +335,8 @@ export default function EditorScreen({ onConfirm, onBack, savedState }) {
                 )
               })}
             </div>
-            <Btn fullWidth onClick={doConfirm}>Confirmar y ver cotizacion →</Btn>
-            <div className="h-2" />
+            <Btn fullWidth onClick={doConfirm}>Confirmar y ver cotización →</Btn>
+            <div style={{ height: 8 }} />
           </>
         )}
       </Modal>

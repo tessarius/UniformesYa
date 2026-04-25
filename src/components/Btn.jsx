@@ -1,48 +1,38 @@
 import Icon from './Icon'
 
-const variantStyles = {
-  primary: {
-    base: 'text-white',
-    enabled: 'bg-accent shadow-[0_4px_20px_rgba(29,107,255,0.35)]',
-    disabled: 'bg-dark-border shadow-none',
-  },
-  secondary: {
-    base: 'text-text-dim border border-dark-border bg-[#152035]',
-    enabled: '',
-    disabled: '',
-  },
-  ghost: {
-    base: 'text-text-secondary bg-transparent',
-    enabled: '',
-    disabled: '',
-  },
-  danger: {
-    base: 'text-danger border border-danger/20 bg-[#2A1020]',
-    enabled: '',
-    disabled: '',
-  },
-  success: {
-    base: 'text-success border border-success/20 bg-[#0D2A1F]',
-    enabled: '',
-    disabled: '',
-  },
-}
+export default function Btn({ children, onClick, variant = 'primary', disabled, icon, fullWidth, small, className = '', style: extraStyle = {} }) {
+  const base = {
+    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+    fontFamily: "'DM Sans', sans-serif", fontWeight: 600,
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    border: 'none', borderRadius: 12, transition: 'all 0.15s', outline: 'none',
+    fontSize: small ? 14 : 16,
+    padding: small ? '10px 16px' : '16px 22px',
+    width: fullWidth ? '100%' : undefined,
+    opacity: disabled ? 0.4 : 1,
+    ...extraStyle,
+  }
 
-export default function Btn({ children, onClick, variant = 'primary', disabled, icon, fullWidth, small, className = '' }) {
-  const v = variantStyles[variant] || variantStyles.primary
+  const variants = {
+    primary: {
+      background: disabled ? '#1C3050' : '#1D6BFF',
+      color: '#fff',
+      boxShadow: disabled ? 'none' : '0 4px 20px rgba(29,107,255,0.35)',
+    },
+    secondary: {
+      background: '#152035', color: '#8BAAC8',
+      border: '1px solid #1C3050',
+    },
+    ghost: { background: 'transparent', color: '#7A96BF' },
+    danger: { background: '#2A1020', color: '#FF4D6A', border: '1px solid rgba(255,77,106,0.2)' },
+    success: { background: '#0D2A1F', color: '#14CC88', border: '1px solid rgba(20,204,136,0.2)' },
+  }
+
   return (
     <button
-      className={`
-        flex items-center justify-center gap-2 font-semibold cursor-pointer
-        border-none rounded-xl transition-all outline-none
-        ${small ? 'text-sm py-2.5 px-4' : 'text-base py-[15px] px-5'}
-        ${fullWidth ? 'w-full' : ''}
-        ${disabled ? 'opacity-40 cursor-not-allowed' : ''}
-        ${v.base}
-        ${disabled ? v.disabled : v.enabled}
-        ${className}
-      `}
+      style={{ ...base, ...variants[variant] }}
       onClick={disabled ? undefined : onClick}
+      className={className}
     >
       {icon && <Icon name={icon} size={18} />}
       {children}

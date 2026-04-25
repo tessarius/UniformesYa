@@ -85,11 +85,11 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg font-sans max-w-[430px] mx-auto relative">
+    <div className="app-shell">
       {screens[screen] || screens.welcome}
 
       {screen === 'welcome' && (
-        <div className="fixed bottom-3 right-3">
+        <div className="absolute bottom-3 right-3">
           <button onClick={() => go('admin_login')}
             className="bg-white/[0.04] border border-dark-border rounded-lg py-1.5 px-2.5 text-[11px] text-text-muted cursor-pointer">
             Admin
